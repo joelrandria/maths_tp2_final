@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     EdgeView.cpp \
     FourierTransform.cpp \
     EdgeBuilder.cpp \
-    FourierLowPassFilter.cpp
+    FourierLowPassFilter.cpp \
+    FastFourierTransform.cpp
 
 HEADERS  += MainWindow.h \
     Edge.h \
@@ -30,7 +31,8 @@ HEADERS  += MainWindow.h \
     IFourierTransform.h \
     EdgeBuilder.h \
     IFourierFilter.h \
-    FourierLowPassFilter.h
+    FourierLowPassFilter.h \
+    FastFourierTransform.h
 
 FORMS    += MainWindow.ui
 
