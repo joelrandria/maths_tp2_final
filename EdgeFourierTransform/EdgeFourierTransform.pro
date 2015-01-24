@@ -11,21 +11,26 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = EdgeFourierTransform
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_LFLAGS +=  -std=c++11
 
 SOURCES += main.cpp\
         MainWindow.cpp \
     Edge.cpp \
-    EdgeFT.cpp \
     EdgeView.cpp \
-    FourierTransform.cpp
+    FourierTransform.cpp \
+    EdgeBuilder.cpp \
+    FourierLowPassFilter.cpp
 
 HEADERS  += MainWindow.h \
     Edge.h \
-    EdgeFT.h \
     EdgeView.h \
     Fourier.h \
     FourierTransform.h \
-    IFourierTransform.h
+    IFourierTransform.h \
+    EdgeBuilder.h \
+    IFourierFilter.h \
+    FourierLowPassFilter.h
 
 FORMS    += MainWindow.ui
 

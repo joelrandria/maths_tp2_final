@@ -10,92 +10,54 @@
 #include <complex>
 
 EdgeView::EdgeView(QWidget *parent) :
-    QGraphicsView(parent),
-    m_edgeColor(0, 0, 255),
-    m_filteredEdgeColor(255, 0, 0)
+    QGraphicsView(parent)
+{
+}
+EdgeView::~EdgeView()
 {
 }
 
 void EdgeView::paintEvent(QPaintEvent* event)
 {
+    uint i;
+
     QGraphicsView::paintEvent(event);
 
     QPainter painter(viewport());
 
-    drawEdge(painter, m_edge, m_edgeColor, 2);
-    drawEdge(painter, m_filteredEdge, m_filteredEdgeColor, 2);
+    for (i = 0; i < m_edges.size(); ++i)
+        drawEdge(painter, m_edges[i], 2);
 }
-void EdgeView::drawEdge(QPainter& painter, const Edge &edge, const QColor &color, qreal width)
+void EdgeView::drawEdge(QPainter& painter, const Edge* edge, qreal width)
 {
-    int valueCount;
-    std::vector<std::complex<double> > edgeValues;
+    int pointCount;
+    ComplexVector points;
 
-    edgeValues = edge.constValues();
-    valueCount = edgeValues.size();
+    points = edge->points();
+    pointCount = points.size();
 
-    QPen pen(color, width);
+    QPen pen(edge->color(), width);
 
     painter.setPen(pen);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    for (int i = 0; i < valueCount; ++i)
-        painter.drawPoint(edgeValues[i].real(), edgeValues[i].imag());
+    for (int i = 0; i < pointCount; ++i)
+            painter.drawPoint(points[i].real(), points[i].imag());
 }
 
 void EdgeView::mouseReleaseEvent(QMouseEvent *event)
 {
-    QList<QPoint> edgePoints;
-
-    QPoint pos = event->pos();
-
-    if (!m_lastSelectedPoint.isNull())
-    {
-        Edge::getEdgePoints(m_lastSelectedPoint, pos, edgePoints);
-
-        for (int i = 0; i < edgePoints.count(); ++i)
-            m_edge.addValue(std::complex<double>(edgePoints[i].x(), edgePoints[i].y()));
-    }
-
-    m_lastSelectedPoint = pos;
-
-    viewport()->update();
+    emit mouseClicked(event->pos());
 }
 
-void EdgeView::applyLowPassFilter(float percentThreshold)
+void EdgeView::addEdge(Edge* edge)
 {
-    if (percentThreshold <= 0)
-    {
-        m_filteredEdge = Edge();
-    }
-    else
-    {
-        QElapsedTimer timer;
-        timer.start();
+    m_edges.push_back(edge);
 
-        EdgeFT edgeFT(m_edge);
-
-        qDebug() << QString("Transformée de Fourier effectuée en %1 secondes s/ %2 points")
-                    .arg((double)timer.elapsed() / 1000.f).arg(m_edge.constValues().size());
-
-        timer.restart();
-
-        edgeFT.lowPassFilter(percentThreshold);
-
-        m_filteredEdge = edgeFT.edge();
-
-        qDebug() << QString("Transformée de Fourier inverse effectuée en %1 secondes s/ %2 fréquences")
-                    .arg((double)timer.elapsed() / 1000.f).arg(edgeFT.fourierCoefficients().size());
-    }
-
-    viewport()->update();
+    connect(edge, SIGNAL(pointsChanged(Edge*)), this, SLOT(onEdgePointsChanged(Edge*)));
 }
 
-void EdgeView::reset()
+void EdgeView::onEdgePointsChanged(Edge*)
 {
-    m_lastSelectedPoint = QPoint();
-
-    m_edge = Edge();
-    m_filteredEdge = Edge();
-
     viewport()->update();
 }

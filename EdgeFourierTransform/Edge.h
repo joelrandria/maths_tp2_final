@@ -1,39 +1,40 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include <QList>
-#include <QPoint>
-#include <QDebug>
+#include "Fourier.h"
 
-#include <complex>
-#include <vector>
+#include <QColor>
+#include <QObject>
 
-class Edge
+class Edge : public QObject
 {
-    friend class EdgeFT;
+    Q_OBJECT
 
 private:
 
-    int m_closureValueCount;
-    std::vector<std::complex<double> > m_values;
+    QColor m_color;
+    ComplexVector m_points;
 
 public:
 
-    Edge();
+    Edge(const QColor& color = Qt::black);
+    Edge(const Edge& e);
+    ~Edge();
+
+    QColor color() const { return m_color; }
+
+    const ComplexVector& points() const { return m_points; }
+    void setPoints(const ComplexVector& points);
+
+    void clear();
 
     void print() const;
 
-    void addValue(std::complex<double> value);
+    Edge& operator=(const Edge& e);
 
-    const std::vector<std::complex<double> >& constValues() const { return m_values; }
+signals:
 
-    static void getEdgePoints(const QPoint &p1, const QPoint &p2, QList<QPoint> &points);
-
-private:
-
-    void deleteClosureValues();
-    void close();
-
+    void pointsChanged(Edge* e);
 };
 
 #endif // EDGE_H
