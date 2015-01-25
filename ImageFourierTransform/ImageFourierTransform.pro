@@ -11,11 +11,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ImageFourierTransform
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_LFLAGS +=  -std=c++11
 
 SOURCES += main.cpp\
-        MainWindow.cpp
+        MainWindow.cpp \
+    Image.cpp
 
-HEADERS  += MainWindow.h
+HEADERS  += MainWindow.h \
+    Image.h
 
 FORMS    += MainWindow.ui
 
@@ -25,3 +29,6 @@ else:unix: LIBS += -L$$PWD/../build-FourierTransform-Desktop-Debug/ -lFourierTra
 
 INCLUDEPATH += $$PWD/../FourierTransform
 DEPENDPATH += $$PWD/../FourierTransform
+
+RESOURCES += \
+    ImageFourier.qrc
