@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/Images">
         <file>ucbl.png</file>
-        <file>fourier.png</file>
     </qresource>
 </RCC>

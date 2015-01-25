@@ -16,12 +16,15 @@ QMAKE_LFLAGS +=  -std=c++11
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    Image.cpp
+    Image.cpp \
+    Fourier2DFilter.cpp
 
 HEADERS  += MainWindow.h \
-    Image.h
+    Image.h \
+    Fourier2DFilter.h
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+    Fourier2DFilter.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build-FourierTransform-Desktop-Debug/release/ -lFourierTransform
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build-FourierTransform-Desktop-Debug/debug/ -lFourierTransform

@@ -6,7 +6,7 @@ Image::Image()
     :QObject()
 {
 }
-Image::Image(const Image &image)
+Image::Image(const Image& image)
     :QObject()
 {
     *this = image;
@@ -15,7 +15,7 @@ Image::~Image()
 {
 }
 
-Image &Image::operator=(const Image &image)
+Image& Image::operator=(const Image& image)
 {
     m_pixmap = image.m_pixmap;
 
@@ -29,7 +29,7 @@ Image &Image::operator=(const Image &image)
     return *this;
 }
 
-void Image::load(const QString &filename)
+void Image::load(const QString& filename)
 {
     m_pixmap.load(filename);
 
@@ -40,7 +40,7 @@ void Image::load(const QString &filename)
 
     emit changed(this);
 }
-void Image::load(const ComplexMatrix &matrix, int width, int height)
+void Image::load(const ComplexMatrix& matrix, int width, int height)
 {
     int r;
     int c;

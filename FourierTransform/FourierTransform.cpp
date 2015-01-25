@@ -71,11 +71,11 @@ void FourierTransform::inverseTransform(const ComplexVector& spectralValues, Com
     }
 }
 
-void FourierTransform::transform(const ComplexMatrix &, ComplexMatrix &)
+void FourierTransform::transform(const ComplexMatrix& , ComplexMatrix& )
 {
     throw std::domain_error("FourierTransform::transform(ComplexMatrix, ComplexMatrix) non implémentée");
 }
-void FourierTransform::inverseTransform(const ComplexMatrix &, ComplexMatrix &)
+void FourierTransform::inverseTransform(const ComplexMatrix& , ComplexMatrix& )
 {
     throw std::domain_error("FourierTransform::inverseTransform(ComplexMatrix, ComplexMatrix) non implémentée");
 }

@@ -12,7 +12,7 @@ void FastFourierTransform::transform(const ComplexVector& signalValues, ComplexV
 
     butterflyScaffolding(signalValues, spectralValues, SpectralFourierTransform);
 }
-void FastFourierTransform::transform(const ComplexMatrix &signalValues, ComplexMatrix &spectralValues)
+void FastFourierTransform::transform(const ComplexMatrix& signalValues, ComplexMatrix& spectralValues)
 {
     int r;
     int rowCount;
@@ -48,7 +48,7 @@ void FastFourierTransform::inverseTransform(const ComplexVector& spectralValues,
 
     butterflyScaffolding(spectralValues, signalValues, SpatialFourierTransform);
 }
-void FastFourierTransform::inverseTransform(const ComplexMatrix &spectralValues, ComplexMatrix &signalValues)
+void FastFourierTransform::inverseTransform(const ComplexMatrix& spectralValues, ComplexMatrix& signalValues)
 {
     int r;
     int rowCount;

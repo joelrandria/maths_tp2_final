@@ -7,15 +7,27 @@
 
 class ComplexMatrix
 {
+public:
+
+    enum SpectrumAlignment
+    {
+        HighFrequencyMajorAlignment,
+        LowFrequencyMajorAlignment
+    };
+
 private:
 
     std::vector<ComplexVector> m_matrix;
+    SpectrumAlignment m_alignment;
 
 public:
 
     ComplexMatrix();
     ComplexMatrix(const ComplexMatrix& mat);
     ~ComplexMatrix();
+
+    SpectrumAlignment alignment() const { return m_alignment; }
+    void setAlignment(SpectrumAlignment alignment);
 
     int rows() const { return (int)m_matrix.size(); }
     int cols() const { return m_matrix.size() > 0 ? (int)m_matrix[0].size() : 0; }
@@ -32,6 +44,12 @@ public:
     void print() const;
 
     ComplexMatrix& operator=(const ComplexMatrix& mat);
+
+private:
+
+    static void blit(const ComplexMatrix& src, int srcStartRow, int srcStartCol,
+                     int rowCount, int colCount,
+                     ComplexMatrix& dst, int dstStartRow, int dstStartCol);
 };
 
 #endif // COMPLEXMATRIX_H

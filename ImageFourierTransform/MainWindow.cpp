@@ -2,8 +2,6 @@
 #include "ui_MainWindow.h"
 
 #include <QFileDialog>
-#include <QPixmap>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(&m_baseImage, SIGNAL(changed(Image*)), this, SLOT(onBaseImageChanged(Image*)));
+    connect(ui->fourier2DFilter, SIGNAL(filteredSpectrumChanged(Fourier2DFilter*)), this, SLOT(onFilteredSpectrumChanged(Fourier2DFilter*)));
 }
 MainWindow::~MainWindow()
 {
@@ -32,64 +31,24 @@ void MainWindow::on_actionOpen_triggered()
     if (fd.exec())
         m_baseImage.load(fd.selectedFiles().first());
 }
+
 void MainWindow::onBaseImageChanged(Image *)
 {
+    ComplexMatrix spectrumMatrix;
+
     ui->baseImageLabel->setPixmap(m_baseImage.pixmap());
 
-    ////////////////////////////////////////////////////////////////////////////////////
+    m_fft.transform(m_baseImage.signalMatrix(), spectrumMatrix);
 
-    ComplexMatrix signalMatrix = m_baseImage.signalMatrix();
-
-    ComplexMatrix transformMatrix;
-    transformMatrix.resize(signalMatrix.rows(), signalMatrix.cols());
-
-    m_fft.transform(signalMatrix, transformMatrix);
-    updateTransformView(transformMatrix);
-
-    ComplexMatrix inverseTransformMatrix;
-    transformMatrix.resize(signalMatrix.rows(), signalMatrix.cols());
-
-    m_fft.inverseTransform(transformMatrix, inverseTransformMatrix);
-
-    m_filteredImage.load(inverseTransformMatrix, m_baseImage.pixmap().width(), m_baseImage.pixmap().height());
-    ui->filteredImageLabel->setPixmap(m_filteredImage.pixmap());
-
-    ////////////////////////////////////////////////////////////////////////////////////
+    ui->fourier2DFilter->setInputSpectrum(spectrumMatrix);
 }
 
-void MainWindow::updateTransformView(const ComplexMatrix& transformMatrix)
+void MainWindow::onFilteredSpectrumChanged(Fourier2DFilter *)
 {
-    int r;
-    int c;
-    int rowCount;
-    int colCount;
+    ComplexMatrix filteredSignalMatrix;
 
-    rowCount = transformMatrix.rows();
-    colCount = transformMatrix.cols();
+    m_fft.inverseTransform(ui->fourier2DFilter->filteredSpectrum(), filteredSignalMatrix);
 
-    QImage transformImage(colCount, rowCount, QImage::Format_RGB32);
-
-    for (r = 0; r < rowCount; ++r)
-    {
-        for (c = 0; c < colCount; ++c)
-        {
-            if (fabs(transformMatrix.at(r, c).real()) > 0.01f)
-                transformImage.setPixel(c, r, qRgb(255, 255, 255));
-            else
-                transformImage.setPixel(c, r, qRgb(0, 0, 0));
-        }
-    }
-
-    m_transformPixmap = QPixmap::fromImage(transformImage).scaled(m_baseImage.pixmap().size());
-    ui->transformImageLabel->setPixmap(m_transformPixmap);
-
-//    QLabel* label = new QLabel();
-//    label->setPixmap(m_transformPixmap);
-//    label->setGraphicsEffect(new QGraphicsEffect());
-
-//    QPixmap output(inPixmap.width(), inPixmap.height());
-//    QPainter painter(&output);
-//    label->render(&painter);
-
-//    delete label;
+    m_filteredImage.load(filteredSignalMatrix, m_baseImage.pixmap().width(), m_baseImage.pixmap().height());
+    ui->filteredImageLabel->setPixmap(m_filteredImage.pixmap());
 }

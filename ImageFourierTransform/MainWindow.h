@@ -10,6 +10,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class Fourier2DFilter;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -34,13 +36,7 @@ private slots:
     void on_actionQuit_triggered();
 
     void onBaseImageChanged(Image*);
-
-private:
-
-    QPixmap m_transformPixmap;
-
-    void updateTransformView(const ComplexMatrix& transformMatrix);
-
+    void onFilteredSpectrumChanged(Fourier2DFilter*);
 };
 
 #endif // MAINWINDOW_H
