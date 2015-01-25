@@ -3,6 +3,8 @@
 
 #include "IFourierTransform.h"
 
+#include <QtGlobal>
+
 class FastFourierTransform : public IFourierTransform
 {
 private:

@@ -18,23 +18,21 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     Edge.cpp \
     EdgeView.cpp \
-    FourierTransform.cpp \
-    EdgeBuilder.cpp \
-    FourierLowPassFilter.cpp \
-    FastFourierTransform.cpp
+    EdgeBuilder.cpp
 
 HEADERS  += MainWindow.h \
     Edge.h \
     EdgeView.h \
-    Fourier.h \
-    FourierTransform.h \
-    IFourierTransform.h \
-    EdgeBuilder.h \
-    IFourierFilter.h \
-    FourierLowPassFilter.h \
-    FastFourierTransform.h
+    EdgeBuilder.h
 
 FORMS    += MainWindow.ui
 
 OTHER_FILES += \
     EdgeFourierTransform.pro.user
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build-FourierTransform-Desktop-Debug/release/ -lFourierTransform
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build-FourierTransform-Desktop-Debug/debug/ -lFourierTransform
+else:unix: LIBS += -L$$PWD/../build-FourierTransform-Desktop-Debug/ -lFourierTransform
+
+INCLUDEPATH += $$PWD/../FourierTransform
+DEPENDPATH += $$PWD/../FourierTransform
