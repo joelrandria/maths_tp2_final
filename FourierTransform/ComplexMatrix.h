@@ -22,7 +22,9 @@ public:
 
     ComplexVector& at(int row) { return m_matrix[row]; }
     const ComplexVector& at(int row) const { return m_matrix[row]; }
+
     Complex& at(int row, int col) { return m_matrix[row][col]; }
+    const Complex& at(int row, int col) const { return m_matrix[row][col]; }
 
     void resize(int rows, int cols);
     void transpose();

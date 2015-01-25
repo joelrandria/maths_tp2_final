@@ -35,6 +35,12 @@ private slots:
 
     void onBaseImageChanged(Image*);
 
+private:
+
+    QPixmap m_transformPixmap;
+
+    void updateTransformView(const ComplexMatrix& transformMatrix);
+
 };
 
 #endif // MAINWINDOW_H

@@ -40,33 +40,56 @@ void MainWindow::onBaseImageChanged(Image *)
 
     ComplexMatrix signalMatrix = m_baseImage.signalMatrix();
 
-    int signalWidth = signalMatrix.cols();
-    int signalHeight = signalMatrix.rows();
-
-//    qDebug() << "----- Signal -----";
-//    signalMatrix.print();
-//    qDebug() << "------------------------------------";
-
     ComplexMatrix transformMatrix;
     transformMatrix.resize(signalMatrix.rows(), signalMatrix.cols());
 
     m_fft.transform(signalMatrix, transformMatrix);
-
-//    qDebug() << "----- Transformée -----";
-//    transformMatrix.print();
-//    qDebug() << "------------------------------------";
+    updateTransformView(transformMatrix);
 
     ComplexMatrix inverseTransformMatrix;
     transformMatrix.resize(signalMatrix.rows(), signalMatrix.cols());
 
     m_fft.inverseTransform(transformMatrix, inverseTransformMatrix);
 
-//    qDebug() << "----- Transformée inverse -----";
-//    inverseTransformMatrix.print();
-//    qDebug() << "------------------------------------";
-
     m_filteredImage.load(inverseTransformMatrix, m_baseImage.pixmap().width(), m_baseImage.pixmap().height());
-    ui->testLabel->setPixmap(m_filteredImage.pixmap());
+    ui->filteredImageLabel->setPixmap(m_filteredImage.pixmap());
 
     ////////////////////////////////////////////////////////////////////////////////////
+}
+
+void MainWindow::updateTransformView(const ComplexMatrix& transformMatrix)
+{
+    int r;
+    int c;
+    int rowCount;
+    int colCount;
+
+    rowCount = transformMatrix.rows();
+    colCount = transformMatrix.cols();
+
+    QImage transformImage(colCount, rowCount, QImage::Format_RGB32);
+
+    for (r = 0; r < rowCount; ++r)
+    {
+        for (c = 0; c < colCount; ++c)
+        {
+            if (fabs(transformMatrix.at(r, c).real()) > 0.01f)
+                transformImage.setPixel(c, r, qRgb(255, 255, 255));
+            else
+                transformImage.setPixel(c, r, qRgb(0, 0, 0));
+        }
+    }
+
+    m_transformPixmap = QPixmap::fromImage(transformImage).scaled(m_baseImage.pixmap().size());
+    ui->transformImageLabel->setPixmap(m_transformPixmap);
+
+//    QLabel* label = new QLabel();
+//    label->setPixmap(m_transformPixmap);
+//    label->setGraphicsEffect(new QGraphicsEffect());
+
+//    QPixmap output(inPixmap.width(), inPixmap.height());
+//    QPainter painter(&output);
+//    label->render(&painter);
+
+//    delete label;
 }
