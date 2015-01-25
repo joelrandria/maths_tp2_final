@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QPixmap>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,7 +20,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionQuit_triggered()
 {
-
+    QApplication::quit();
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -34,4 +35,32 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::onBaseImageChanged(Image *)
 {
     ui->baseImageLabel->setPixmap(m_baseImage.pixmap());
+
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    ComplexMatrix signalMatrix = m_baseImage.signalMatrix();
+
+    qDebug() << "----- Signal -----";
+    signalMatrix.print();
+    qDebug() << "------------------------------------";
+
+    ComplexMatrix transformMatrix;
+    transformMatrix.resize(signalMatrix.rows(), signalMatrix.cols());
+
+    m_fft.transform(signalMatrix, transformMatrix);
+
+    qDebug() << "----- Transformée -----";
+    transformMatrix.print();
+    qDebug() << "------------------------------------";
+
+    ComplexMatrix inverseTransformMatrix;
+    transformMatrix.resize(signalMatrix.rows(), signalMatrix.cols());
+
+    m_fft.inverseTransform(transformMatrix, inverseTransformMatrix);
+
+    qDebug() << "----- Transformée inverse -----";
+    inverseTransformMatrix.print();
+    qDebug() << "------------------------------------";
+
+    ////////////////////////////////////////////////////////////////////////////////////
 }

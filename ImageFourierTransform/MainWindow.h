@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "Image.h"
+#include "FastFourierTransform.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +19,8 @@ private:
     Ui::MainWindow *ui;
 
     Image m_baseImage;
+
+    FastFourierTransform m_fft;
 
 public:
 

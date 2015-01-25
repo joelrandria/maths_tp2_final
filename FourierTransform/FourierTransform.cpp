@@ -30,6 +30,11 @@ void FourierTransform::transform(const ComplexVector& signalValues, ComplexVecto
         spectralValues[m >= 0 ? m : valueCount + m] = sum / (double)valueCount;
     }
 }
+void FourierTransform::transform(const ComplexMatrix &signalValues, ComplexMatrix &spectralValues)
+{
+    throw std::domain_error("FourierTransform::transform(ComplexMatrix, ComplexMatrix) non implémentée");
+}
+
 void FourierTransform::inverseTransform(const ComplexVector& spectralValues, ComplexVector& signalValues)
 {
     int i;
@@ -69,4 +74,8 @@ void FourierTransform::inverseTransform(const ComplexVector& spectralValues, Com
 
         signalValues[i++] = sum;
     }
+}
+void FourierTransform::inverseTransform(const ComplexMatrix &spectralValues, ComplexMatrix &signalValues)
+{
+    throw std::domain_error("FourierTransform::inverseTransform(ComplexMatrix, ComplexMatrix) non implémentée");
 }

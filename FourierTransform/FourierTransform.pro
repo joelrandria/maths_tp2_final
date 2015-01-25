@@ -14,7 +14,8 @@ DEFINES += FOURIERTRANSFORM_LIBRARY
 SOURCES += \
     FourierTransform.cpp \
     FourierLowPassFilter.cpp \
-    FastFourierTransform.cpp
+    FastFourierTransform.cpp \
+    ComplexMatrix.cpp
 
 HEADERS += \
     FourierTransform_Global.h \
@@ -23,7 +24,8 @@ HEADERS += \
     FourierTransform.h \
     FourierLowPassFilter.h \
     FastFourierTransform.h \
-    Fourier.h
+    Fourier.h \
+    ComplexMatrix.h
 
 unix {
     target.path = /usr/lib
