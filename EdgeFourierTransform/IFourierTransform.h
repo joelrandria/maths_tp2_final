@@ -7,8 +7,8 @@ class IFourierTransform
 {
 public:
 
-    virtual void transform(const ComplexVector& baseValues, ComplexVector& transformedValues) = 0;
-    virtual void inverseTransform(const ComplexVector& transformedValues, ComplexVector& baseValues) = 0;
+    virtual void transform(const ComplexVector& signalValues, ComplexVector& spectralValues) = 0;
+    virtual void inverseTransform(const ComplexVector& spectralValues, ComplexVector& signalValues) = 0;
 };
 
 #endif // IFOURIERTRANSFORM_H

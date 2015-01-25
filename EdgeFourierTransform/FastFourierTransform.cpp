@@ -4,7 +4,16 @@
 
 #include <cmath>
 
-void FastFourierTransform::transform(const ComplexVector& baseValues, ComplexVector& transformedValues)
+void FastFourierTransform::transform(const ComplexVector& signalValues, ComplexVector& spectralValues)
+{
+    butterflyScaffolding(signalValues, spectralValues, SpectralFourierTransform);
+}
+void FastFourierTransform::inverseTransform(const ComplexVector& spectralValues, ComplexVector& signalValues)
+{
+    butterflyScaffolding(spectralValues, signalValues, SpatialFourierTransform);
+}
+
+void FastFourierTransform::butterflyScaffolding(const ComplexVector& baseValues, ComplexVector& compositeValues, FastFourierTransform::FourierTransformType type)
 {
     uint signalStart;
     uint signalsWidth;
@@ -26,46 +35,51 @@ void FastFourierTransform::transform(const ComplexVector& baseValues, ComplexVec
     while (signalsWidth <= valueCount)
     {
         for (signalStart = 0; signalStart < valueCount; signalStart += signalsWidth)
-            butterfly(*infOrder, signalStart, signalStart + signalsWidth, *supOrder);
+            butterfly(*infOrder, signalStart, signalStart + signalsWidth, *supOrder, type);
 
         swap(infOrder, supOrder);
 
         signalsWidth *= 2;
     }
 
-    transformedValues = *infOrder;
+    compositeValues = *infOrder;
 
-    normalize(transformedValues);
+    if (type == SpectralFourierTransform)
+        normalize(compositeValues);
 
     delete infOrder;
     delete supOrder;
 }
-void FastFourierTransform::butterfly(const ComplexVector& infOrder, uint start, uint end, ComplexVector& supOrder)
+void FastFourierTransform::butterfly(const ComplexVector& infOrder, uint start, uint end, ComplexVector& supOrder, FourierTransformType type)
 {
     uint m;
     uint M;
     uint half;
 
+    double piFactor;
+
     M = (end - start) / 2;
     half = (end + start) / 2;
 
+    piFactor = type == SpectralFourierTransform ? -M_PI : M_PI;
+
     for (m = 0; m < M; ++m)
     {
-        supOrder[start + m] = infOrder[start + m] + exp(Complex(0, -M_PI * m / M)) * infOrder[half + m];
-        supOrder[half + m] = infOrder[start + m] - exp(Complex(0, -M_PI * m / M)) * infOrder[half + m];
+        supOrder[start + m] = infOrder[start + m] + exp(Complex(0, piFactor * m / M)) * infOrder[half + m];
+        supOrder[half + m] = infOrder[start + m] - exp(Complex(0, piFactor * m / M)) * infOrder[half + m];
     }
 }
 
-void FastFourierTransform::normalize(ComplexVector &transformedValues)
+void FastFourierTransform::normalize(ComplexVector& spectralValues)
 {
     uint i;
     uint valueCount;
 
-    valueCount = transformedValues.size();
+    valueCount = spectralValues.size();
 
     for (i = 0; i < valueCount; ++i)
-        transformedValues[i] = Complex(transformedValues[i].real() / valueCount,
-                                       transformedValues[i].imag() / valueCount);
+        spectralValues[i] = Complex(spectralValues[i].real() / valueCount,
+                                       spectralValues[i].imag() / valueCount);
 }
 
 void FastFourierTransform::swap(ComplexVector*& vec1, ComplexVector*& vec2)
@@ -77,33 +91,17 @@ void FastFourierTransform::swap(ComplexVector*& vec1, ComplexVector*& vec2)
     vec2 = temp;
 }
 
-void FastFourierTransform::inverseTransform(const ComplexVector& transformedValues, ComplexVector& baseValues)
-{
-}
-
-void FastFourierTransform::printValues(const QString& title, const ComplexVector& values)
-{
-    uint i;
-
-    qDebug() << title;
-
-    for (i = 0; i < values.size(); ++i)
-        qDebug() << QString("<%1,%2> ")
-                    .arg(values[i].real())
-                    .arg(values[i].imag());
-}
-
-void FastFourierTransform::reorder(const ComplexVector& baseValues, ComplexVector& orderedValues)
+void FastFourierTransform::reorder(const ComplexVector& signalValues, ComplexVector& orderedValues)
 {
     uint i;
     uint bitcount;
     uint valueCount;
 
-    valueCount = baseValues.size();
+    valueCount = signalValues.size();
     bitcount = (uint)log2(valueCount);
 
     for (i = 0; i < valueCount; ++i)
-        orderedValues[bitReversed(i, bitcount)] = baseValues[i];
+        orderedValues[bitReversed(i, bitcount)] = signalValues[i];
 }
 uint FastFourierTransform::bitReversed(uint value, uint bitCount)
 {

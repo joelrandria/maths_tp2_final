@@ -149,7 +149,7 @@ void MainWindow::updateFilteredEdge()
     m_lowPassFilter->filter(fourierValues);
 
     m_timer.restart();
-    m_fourierTransforms[0]->inverseTransform(fourierValues, edgePoints);
+    m_fourierTransforms[selectedTransform]->inverseTransform(fourierValues, edgePoints);
     ui->inverseTransformTimeLabel->setText(QString("%1").arg((float)m_timer.elapsed() / 1000));
 
     m_filteredEdge->setPoints(edgePoints);
