@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QElapsedTimer>
 
 #include "EdgeBuilder.h"
 
@@ -21,13 +22,14 @@ private:
 
     Ui::MainWindow *ui;
 
+    QElapsedTimer m_timer;
+
     EdgeBuilder m_edgeBuilder;
 
     Edge* m_baseEdge;
     Edge* m_filteredEdge;
 
-    IFourierTransform* m_fourierTransform;
-    IFourierTransform* m_fastFourierTransform;
+    IFourierTransform* m_fourierTransforms[2];
 
     FourierLowPassFilter* m_lowPassFilter;
 
@@ -39,6 +41,7 @@ public:
 private:
 
     void initializeEdges();
+    void initializeFourierTransforms();
 
     void updateBaseEdgeInfos();
     void updateFilteredEdge();
@@ -50,6 +53,8 @@ private slots:
 
     void onEdgeViewMouseClicked(const QPoint& pos);
     void onBaseEdgePointsChanged(Edge*);
+
+    void on_methodTypeComboBox_currentIndexChanged(int index);
 
     void on_lowPassFilterSlider_valueChanged(int value);
     void on_lowPassFilterSpinbox_valueChanged(double arg1);

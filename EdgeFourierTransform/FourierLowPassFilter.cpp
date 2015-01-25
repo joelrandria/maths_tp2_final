@@ -19,8 +19,6 @@ void FourierLowPassFilter::filter(ComplexVector& fourierValues)
     int maxFreqIndex = fourierValues.size() / 2;
     int removeRangeWidth = (int)(m_percentThreshold * (float)halfSize / 100.f);
 
-    qDebug() << QString("%1 frequences à mettre à 0").arg(removeRangeWidth * 2 + 1);
-
     for (int i = 0; i < removeRangeWidth; ++i)
     {
         fourierValues[maxFreqIndex - i] = 0;
