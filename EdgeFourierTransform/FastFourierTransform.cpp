@@ -1,7 +1,5 @@
 #include "FastFourierTransform.h"
 
-#include <QDebug>
-
 #include <cmath>
 
 void FastFourierTransform::transform(const ComplexVector& signalValues, ComplexVector& spectralValues)
@@ -70,27 +68,6 @@ void FastFourierTransform::butterfly(const ComplexVector& infOrder, uint start, 
     }
 }
 
-void FastFourierTransform::normalize(ComplexVector& spectralValues)
-{
-    uint i;
-    uint valueCount;
-
-    valueCount = spectralValues.size();
-
-    for (i = 0; i < valueCount; ++i)
-        spectralValues[i] = Complex(spectralValues[i].real() / valueCount,
-                                       spectralValues[i].imag() / valueCount);
-}
-
-void FastFourierTransform::swap(ComplexVector*& vec1, ComplexVector*& vec2)
-{
-    ComplexVector* temp;
-
-    temp = vec1;
-    vec1 = vec2;
-    vec2 = temp;
-}
-
 void FastFourierTransform::reorder(const ComplexVector& signalValues, ComplexVector& orderedValues)
 {
     uint i;
@@ -121,4 +98,25 @@ uint FastFourierTransform::bitReversed(uint value, uint bitCount)
     }
 
     return reversed;
+}
+
+void FastFourierTransform::normalize(ComplexVector& spectralValues)
+{
+    uint i;
+    uint valueCount;
+
+    valueCount = spectralValues.size();
+
+    for (i = 0; i < valueCount; ++i)
+        spectralValues[i] = Complex(spectralValues[i].real() / valueCount,
+                                       spectralValues[i].imag() / valueCount);
+}
+
+void FastFourierTransform::swap(ComplexVector*& vec1, ComplexVector*& vec2)
+{
+    ComplexVector* temp;
+
+    temp = vec1;
+    vec1 = vec2;
+    vec2 = temp;
 }
