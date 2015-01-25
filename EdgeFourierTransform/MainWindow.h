@@ -27,6 +27,7 @@ private:
     Edge* m_filteredEdge;
 
     IFourierTransform* m_fourierTransform;
+    IFourierTransform* m_fastFourierTransform;
 
     FourierLowPassFilter* m_lowPassFilter;
 

@@ -4,12 +4,16 @@
 #include "Edge.h"
 #include "EdgeView.h"
 #include "FourierTransform.h"
+#include "FastFourierTransform.h"
 #include "FourierLowPassFilter.h"
+
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_fourierTransform(new FourierTransform()),
+    m_fastFourierTransform(new FastFourierTransform()),
     m_lowPassFilter(new FourierLowPassFilter())
 {
     ui->setupUi(this);
@@ -17,6 +21,48 @@ MainWindow::MainWindow(QWidget *parent):
     initializeEdges();
 
     connect(ui->edgeView, SIGNAL(mouseClicked(const QPoint&)), this, SLOT(onEdgeViewMouseClicked(const QPoint&)));
+
+    //////////////////////////////////////////////////////////////////////////
+
+//    ComplexVector spaceValues;
+//    ComplexVector spectralValues;
+//    ComplexVector inverseValues;
+
+//    spaceValues.push_back(Complex(0, 0));
+//    spaceValues.push_back(Complex(50, 50));
+//    spaceValues.push_back(Complex(100, 100));
+//    spaceValues.push_back(Complex(150, 150));
+//    spaceValues.push_back(Complex(200, 200));
+//    spaceValues.push_back(Complex(250, 250));
+//    spaceValues.push_back(Complex(300, 300));
+//    spaceValues.push_back(Complex(350, 350));
+//    spaceValues.push_back(Complex(400, 400));
+//    spaceValues.push_back(Complex(450, 450));
+//    spaceValues.push_back(Complex(500, 500));
+//    spaceValues.push_back(Complex(550, 550));
+//    spaceValues.push_back(Complex(600, 600));
+//    spaceValues.push_back(Complex(650, 650));
+//    spaceValues.push_back(Complex(700, 700));
+//    spaceValues.push_back(Complex(750, 750));
+
+//    spectralValues.resize(spaceValues.size());
+//    inverseValues.resize(spaceValues.size());
+
+//    // FT
+//    m_fourierTransform->transform(spaceValues, spectralValues);
+//    FastFourierTransform::printValues("----- Transformée de Fourier lente -----", spectralValues);
+//    m_fourierTransform->inverseTransform(spectralValues, inverseValues);
+
+//    m_baseEdge->setPoints(spaceValues);
+//    m_filteredEdge->setPoints(inverseValues);
+
+//    // FFT
+//    m_fastFourierTransform->transform(spaceValues, spectralValues);
+//    FastFourierTransform::printValues("----- Transformée de Fourier rapide -----", spectralValues);
+//    m_fourierTransform->inverseTransform(spectralValues, inverseValues);
+
+//    m_baseEdge->setPoints(spaceValues);
+//    m_filteredEdge->setPoints(inverseValues);
 }
 MainWindow::~MainWindow()
 {
@@ -51,7 +97,7 @@ void MainWindow::on_actionNewEdge_triggered()
     ui->lowPassFilterSpinbox->setValue(0);
 }
 
-void MainWindow::onEdgeViewMouseClicked(const QPoint &pos)
+void MainWindow::onEdgeViewMouseClicked(const QPoint& pos)
 {
     ComplexVector baseEdgePoints;
 
@@ -104,7 +150,8 @@ void MainWindow::updateFilteredEdge()
     edgePoints.resize(valueCount);
     fourierValues.resize(valueCount);
 
-    m_fourierTransform->transform(m_baseEdge->points(), fourierValues);
+    //m_fourierTransform->transform(m_baseEdge->points(), fourierValues);
+    m_fastFourierTransform->transform(m_baseEdge->points(), fourierValues);
     m_lowPassFilter->filter(fourierValues);
     m_fourierTransform->inverseTransform(fourierValues, edgePoints);
     m_filteredEdge->setPoints(edgePoints);

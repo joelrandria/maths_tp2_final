@@ -16,7 +16,7 @@ Edge::~Edge()
 {
 }
 
-Edge &Edge::operator=(const Edge &e)
+Edge& Edge::operator=(const Edge& e)
 {
     m_color = e.m_color;
     m_points = e.m_points;
@@ -26,7 +26,7 @@ Edge &Edge::operator=(const Edge &e)
     return *this;
 }
 
-void Edge::setPoints(const ComplexVector &points)
+void Edge::setPoints(const ComplexVector& points)
 {
     m_points = points;
 

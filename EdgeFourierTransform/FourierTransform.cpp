@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <stdio.h>
 
-void FourierTransform::transform(const ComplexVector &baseValues, ComplexVector &transformedValues)
+void FourierTransform::transform(const ComplexVector& baseValues, ComplexVector& transformedValues)
 {
     int valueCount;
     int rangeStart;
@@ -30,7 +30,7 @@ void FourierTransform::transform(const ComplexVector &baseValues, ComplexVector 
         transformedValues[m >= 0 ? m : valueCount + m] = sum / (double)valueCount;
     }
 }
-void FourierTransform::inverseTransform(const ComplexVector &transformedValues, ComplexVector &baseValues)
+void FourierTransform::inverseTransform(const ComplexVector& transformedValues, ComplexVector& baseValues)
 {
     int i;
     int valueCount;
