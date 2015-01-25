@@ -19,6 +19,7 @@ private:
     Ui::MainWindow *ui;
 
     Image m_baseImage;
+    Image m_filteredImage;
 
     FastFourierTransform m_fft;
 

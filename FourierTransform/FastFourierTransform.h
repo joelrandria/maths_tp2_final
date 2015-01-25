@@ -28,6 +28,7 @@ private:
     void butterflyScaffolding(const ComplexVector& baseValues, ComplexVector& compositeValues, FourierTransformType type);
     void butterfly(const ComplexVector& infOrder, uint start, uint end, ComplexVector& supOrder, FourierTransformType type);
 
+    bool isPow2(double value);
     void reorder(const ComplexVector& signalValues, ComplexVector& orderedValues);
     uint bitReversed(uint value, uint bitCount);
 

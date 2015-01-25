@@ -30,7 +30,7 @@ void MainWindow::on_actionOpen_triggered()
     fd.setNameFilter(tr("Portable Graymap (*.pgm)"));
 
     if (fd.exec())
-        m_baseImage.setPixmap(fd.selectedFiles().first());
+        m_baseImage.load(fd.selectedFiles().first());
 }
 void MainWindow::onBaseImageChanged(Image *)
 {
@@ -40,27 +40,33 @@ void MainWindow::onBaseImageChanged(Image *)
 
     ComplexMatrix signalMatrix = m_baseImage.signalMatrix();
 
-    qDebug() << "----- Signal -----";
-    signalMatrix.print();
-    qDebug() << "------------------------------------";
+    int signalWidth = signalMatrix.cols();
+    int signalHeight = signalMatrix.rows();
+
+//    qDebug() << "----- Signal -----";
+//    signalMatrix.print();
+//    qDebug() << "------------------------------------";
 
     ComplexMatrix transformMatrix;
     transformMatrix.resize(signalMatrix.rows(), signalMatrix.cols());
 
     m_fft.transform(signalMatrix, transformMatrix);
 
-    qDebug() << "----- Transformée -----";
-    transformMatrix.print();
-    qDebug() << "------------------------------------";
+//    qDebug() << "----- Transformée -----";
+//    transformMatrix.print();
+//    qDebug() << "------------------------------------";
 
     ComplexMatrix inverseTransformMatrix;
     transformMatrix.resize(signalMatrix.rows(), signalMatrix.cols());
 
     m_fft.inverseTransform(transformMatrix, inverseTransformMatrix);
 
-    qDebug() << "----- Transformée inverse -----";
-    inverseTransformMatrix.print();
-    qDebug() << "------------------------------------";
+//    qDebug() << "----- Transformée inverse -----";
+//    inverseTransformMatrix.print();
+//    qDebug() << "------------------------------------";
+
+    m_filteredImage.load(inverseTransformMatrix, m_baseImage.pixmap().width(), m_baseImage.pixmap().height());
+    ui->testLabel->setPixmap(m_filteredImage.pixmap());
 
     ////////////////////////////////////////////////////////////////////////////////////
 }

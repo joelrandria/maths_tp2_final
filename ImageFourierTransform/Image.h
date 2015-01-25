@@ -26,11 +26,11 @@ public:
     ~Image();
 
     const QPixmap& pixmap() const { return m_pixmap; }
-    void setPixmap(const QString& filename);
-
     const QPixmap& pow2SizedPixmap() const { return m_pow2ScaledPixmap; }
-
     const ComplexMatrix& signalMatrix() const { return m_signalMatrix; }
+
+    void load(const QString& filename);
+    void load(const ComplexMatrix& matrix, int width, int height);
 
     Image& operator=(const Image& image);
 

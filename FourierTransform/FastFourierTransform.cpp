@@ -1,9 +1,15 @@
 #include "FastFourierTransform.h"
 
 #include <cmath>
+#include <stdexcept>
 
 void FastFourierTransform::transform(const ComplexVector& signalValues, ComplexVector& spectralValues)
 {
+    if (signalValues.size() != spectralValues.size())
+        throw new std::invalid_argument("FastFourierTransform::transform(): Les vecteurs d'entrée et de sortie doivent être de mêmes tailles");
+    if (!isPow2((double)signalValues.size()))
+        throw new std::invalid_argument("FastFourierTransform::transform(): La taille du signal doit être une puissance de 2");
+
     butterflyScaffolding(signalValues, spectralValues, SpectralFourierTransform);
 }
 void FastFourierTransform::transform(const ComplexMatrix &signalValues, ComplexMatrix &spectralValues)
@@ -35,6 +41,11 @@ void FastFourierTransform::transform(const ComplexMatrix &signalValues, ComplexM
 }
 void FastFourierTransform::inverseTransform(const ComplexVector& spectralValues, ComplexVector& signalValues)
 {
+    if (signalValues.size() != spectralValues.size())
+        throw new std::invalid_argument("FastFourierTransform::transform(): Les vecteurs d'entrée et de sortie doivent être de mêmes tailles");
+    if (!isPow2((double)spectralValues.size()))
+        throw new std::invalid_argument("FastFourierTransform::transform(): La taille du signal doit être une puissance de 2");
+
     butterflyScaffolding(spectralValues, signalValues, SpatialFourierTransform);
 }
 void FastFourierTransform::inverseTransform(const ComplexMatrix &spectralValues, ComplexMatrix &signalValues)
@@ -155,6 +166,10 @@ uint FastFourierTransform::bitReversed(uint value, uint bitCount)
     return reversed;
 }
 
+bool FastFourierTransform::isPow2(double value)
+{
+    return value == pow(2, log2(value));
+}
 void FastFourierTransform::normalize(ComplexVector& spectralValues)
 {
     uint i;
