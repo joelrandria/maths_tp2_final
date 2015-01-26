@@ -3,6 +3,14 @@
 #include <cmath>
 #include <stdexcept>
 
+FastFourierTransform::FastFourierTransform()
+    :FourierTransformBase()
+{
+}
+FastFourierTransform::~FastFourierTransform()
+{
+}
+
 void FastFourierTransform::transform(const ComplexVector& signalValues, ComplexVector& spectralValues)
 {
     if (signalValues.size() != spectralValues.size())
@@ -12,33 +20,6 @@ void FastFourierTransform::transform(const ComplexVector& signalValues, ComplexV
 
     butterflyScaffolding(signalValues, spectralValues, SpectralFourierTransform);
 }
-void FastFourierTransform::transform(const ComplexMatrix& signalValues, ComplexMatrix& spectralValues)
-{
-    int r;
-    int rowCount;
-
-    ComplexMatrix workingMatrix;
-
-    // Transformée des lignes
-    workingMatrix.resize(signalValues.rows(), signalValues.cols());
-
-    rowCount = workingMatrix.rows();
-
-    for (r = 0; r < rowCount; ++r)
-        transform(signalValues.at(r), workingMatrix.at(r));
-
-    // Transformée des colonnes
-    workingMatrix.transpose();
-    spectralValues.resize(workingMatrix.rows(), workingMatrix.cols());
-
-    rowCount = workingMatrix.rows();
-
-    for (r = 0; r < rowCount; ++r)
-        transform(workingMatrix.at(r), spectralValues.at(r));
-
-    // Transposition finale
-    spectralValues.transpose();
-}
 void FastFourierTransform::inverseTransform(const ComplexVector& spectralValues, ComplexVector& signalValues)
 {
     if (signalValues.size() != spectralValues.size())
@@ -47,34 +28,6 @@ void FastFourierTransform::inverseTransform(const ComplexVector& spectralValues,
         throw new std::invalid_argument("FastFourierTransform::transform(): La taille du signal doit être une puissance de 2");
 
     butterflyScaffolding(spectralValues, signalValues, SpatialFourierTransform);
-}
-void FastFourierTransform::inverseTransform(const ComplexMatrix& spectralValues, ComplexMatrix& signalValues)
-{
-    int r;
-    int rowCount;
-
-    ComplexMatrix spectralCopy;
-    ComplexMatrix workingMatrix;
-
-    spectralCopy = spectralValues;
-    spectralCopy.transpose();
-
-    // Transformée des colonnes
-    workingMatrix.resize(spectralCopy.rows(), spectralCopy.cols());
-
-    rowCount = spectralCopy.rows();
-
-    for (r = 0; r < rowCount; ++r)
-        inverseTransform(spectralCopy.at(r), workingMatrix.at(r));
-
-    // Transformée des lignes
-    workingMatrix.transpose();
-    signalValues.resize(workingMatrix.rows(), workingMatrix.cols());
-
-    rowCount = workingMatrix.rows();
-
-    for (r = 0; r < rowCount; ++r)
-        inverseTransform(workingMatrix.at(r), signalValues.at(r));
 }
 
 void FastFourierTransform::butterflyScaffolding(const ComplexVector& baseValues, ComplexVector& compositeValues, FastFourierTransform::FourierTransformType type)

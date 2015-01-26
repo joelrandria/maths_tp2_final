@@ -1,11 +1,11 @@
 #ifndef FASTFOURIERTRANSFORM_H
 #define FASTFOURIERTRANSFORM_H
 
-#include "IFourierTransform.h"
+#include "FourierTransformBase.h"
 
 #include <QtGlobal>
 
-class FastFourierTransform : public IFourierTransform
+class FastFourierTransform : public FourierTransformBase
 {
 private:
 
@@ -17,11 +17,11 @@ private:
 
 public:
 
-    void transform(const ComplexVector& signalValues, ComplexVector& spectralValues);
-    void transform(const ComplexMatrix& signalValues, ComplexMatrix& spectralValues);
+    FastFourierTransform();
+    virtual ~FastFourierTransform();
 
+    void transform(const ComplexVector& signalValues, ComplexVector& spectralValues);
     void inverseTransform(const ComplexVector& spectralValues, ComplexVector& signalValues);
-    void inverseTransform(const ComplexMatrix& spectralValues, ComplexMatrix& signalValues);
 
 private:
 
