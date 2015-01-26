@@ -36,6 +36,11 @@ signals:
 
     void filteredSpectrumChanged(Fourier2DFilter*);
 
+private slots:
+    void on_amplitudeDisplayThresholdSlider_valueChanged(int value);
+
+    void on_amplitudeDisplayThresholdSpinBox_valueChanged(double arg1);
+
 private:
 
     void updateSpectrumView();

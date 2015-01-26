@@ -8,7 +8,11 @@ Fourier2DFilter::Fourier2DFilter(QWidget *parent) :
     ui(new Ui::Fourier2DFilter)
 {
     ui->setupUi(this);
-    ui->spectrumImageLabel->setGraphicsEffect(new QGraphicsBlurEffect());
+
+    QGraphicsBlurEffect* effect = new QGraphicsBlurEffect();
+    effect->setBlurRadius(2.5f);
+
+    ui->spectrumImageLabel->setGraphicsEffect(effect);
 }
 Fourier2DFilter::~Fourier2DFilter()
 {
@@ -31,8 +35,12 @@ void Fourier2DFilter::updateSpectrumView()
     int rowCount;
     int colCount;
 
+    double minDisplayedAmplitude;
+
     rowCount = m_inputSpectrum.rows();
     colCount = m_inputSpectrum.cols();
+
+    minDisplayedAmplitude = ui->amplitudeDisplayThresholdSpinBox->value();
 
     QImage spectrumImage(colCount, rowCount, QImage::Format_RGB32);
 
@@ -40,7 +48,7 @@ void Fourier2DFilter::updateSpectrumView()
     {
         for (c = 0; c < colCount; ++c)
         {
-            if (fabs(m_inputSpectrum.at(r, c).real()) > 0.025f)
+            if (fabs(m_inputSpectrum.at(r, c).real()) > minDisplayedAmplitude)
                 spectrumImage.setPixel(c, r, qRgb(255, 255, 255));
             else
                 spectrumImage.setPixel(c, r, qRgb(0, 0, 0));
@@ -57,4 +65,15 @@ void Fourier2DFilter::updateFilteredSpectrum()
     m_filteredSpectrum.setAlignment(ComplexMatrix::LowFrequencyMajorAlignment);
 
     emit filteredSpectrumChanged(this);
+}
+
+void Fourier2DFilter::on_amplitudeDisplayThresholdSlider_valueChanged(int value)
+{
+    ui->amplitudeDisplayThresholdSpinBox->setValue((double)value / 1000);
+}
+void Fourier2DFilter::on_amplitudeDisplayThresholdSpinBox_valueChanged(double arg1)
+{
+    ui->amplitudeDisplayThresholdSlider->setValue(arg1 * 1000);
+
+    updateSpectrumView();
 }
