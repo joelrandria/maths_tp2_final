@@ -18,7 +18,8 @@ class MainWindow : public QMainWindow
 
 private:
 
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
+    Fourier2DFilter* m_spectrumFilter;
 
     Image m_baseImage;
     Image m_filteredImage;
@@ -34,6 +35,7 @@ private slots:
 
     void on_actionOpen_triggered();
     void on_actionQuit_triggered();
+    void on_actionShowSpectrumFilter_triggered();
 
     void onBaseImageChanged(Image*);
     void onFilteredSpectrumChanged(Fourier2DFilter*);
