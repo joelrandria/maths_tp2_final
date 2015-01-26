@@ -8,8 +8,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    m_fft(new FastFourierTransform())
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -19,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete m_fft;
 }
 
 void MainWindow::on_actionQuit_triggered()
@@ -46,7 +44,7 @@ void MainWindow::onBaseImageChanged(Image *)
 
     ui->baseImageLabel->setPixmap(m_baseImage.pixmap());
 
-    m_fft->transform2D(m_baseImage.signalMatrix(), spectrumMatrix);
+    m_fft.transform2D(m_baseImage.signalMatrix(), spectrumMatrix);
 
     m_spectrumFilter.setInputSpectrum(spectrumMatrix);
 }
@@ -55,7 +53,7 @@ void MainWindow::onFilteredSpectrumChanged(Fourier2DFilter *)
 {
     ComplexMatrix filteredSignalMatrix;
 
-    m_fft->inverseTransform2D(m_spectrumFilter.filteredSpectrum(), filteredSignalMatrix);
+    m_fft.inverseTransform2D(m_spectrumFilter.filteredSpectrum(), filteredSignalMatrix);
 
     m_filteredImage.load(filteredSignalMatrix, m_baseImage.pixmap().width(), m_baseImage.pixmap().height());
     ui->filteredImageLabel->setPixmap(m_filteredImage.pixmap());

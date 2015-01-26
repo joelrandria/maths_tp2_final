@@ -5,13 +5,11 @@
 
 #include "Image.h"
 #include "Fourier2DFilter.h"
+#include "FastFourierTransform.h"
 
 namespace Ui {
 class MainWindow;
 }
-
-class IFourierTransform;
-class FastFourierTransform;
 
 class MainWindow : public QMainWindow
 {
@@ -24,7 +22,7 @@ private:
     Image m_baseImage;
     Image m_filteredImage;
 
-    IFourierTransform* m_fft;
+    FastFourierTransform m_fft;
 
     Fourier2DFilter m_spectrumFilter;
 
