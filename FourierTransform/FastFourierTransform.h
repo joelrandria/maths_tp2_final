@@ -17,9 +17,6 @@ private:
 
 public:
 
-    FastFourierTransform();
-    virtual ~FastFourierTransform();
-
     void transform(const ComplexVector& signalValues, ComplexVector& spectralValues);
     void inverseTransform(const ComplexVector& spectralValues, ComplexVector& signalValues);
 

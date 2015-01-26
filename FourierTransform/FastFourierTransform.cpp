@@ -3,14 +3,6 @@
 #include <cmath>
 #include <stdexcept>
 
-FastFourierTransform::FastFourierTransform()
-    :FourierTransformBase()
-{
-}
-FastFourierTransform::~FastFourierTransform()
-{
-}
-
 void FastFourierTransform::transform(const ComplexVector& signalValues, ComplexVector& spectralValues)
 {
     if (signalValues.size() != spectralValues.size())
