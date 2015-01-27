@@ -1,18 +1,13 @@
 #include "Fourier2DFilter.h"
 #include "ui_Fourier2DFilter.h"
 
-#include <QGraphicsBlurEffect>
-
 Fourier2DFilter::Fourier2DFilter(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Fourier2DFilter)
 {
     ui->setupUi(this);
 
-    QGraphicsBlurEffect* effect = new QGraphicsBlurEffect();
-    effect->setBlurRadius(2.5f);
-
-    ui->spectrumImageLabel->setGraphicsEffect(effect);
+    connect(ui->amplitudeDisplayThresholdSpinBox, SIGNAL(valueChanged(double)), ui->spectrumView, SLOT(setAmplitudeMinimumDisplayThreshold(double)));
 }
 Fourier2DFilter::~Fourier2DFilter()
 {
@@ -24,39 +19,9 @@ void Fourier2DFilter::setInputSpectrum(const ComplexMatrix& spectrum)
     m_inputSpectrum = spectrum;
     m_inputSpectrum.setAlignment(ComplexMatrix::HighFrequencyMajorAlignment);
 
-    updateSpectrumView();
+    ui->spectrumView->setSpectrum(m_inputSpectrum);
+
     updateFilteredSpectrum();
-}
-
-void Fourier2DFilter::updateSpectrumView()
-{
-    int r;
-    int c;
-    int rowCount;
-    int colCount;
-
-    double minDisplayedAmplitude;
-
-    rowCount = m_inputSpectrum.rows();
-    colCount = m_inputSpectrum.cols();
-
-    minDisplayedAmplitude = ui->amplitudeDisplayThresholdSpinBox->value();
-
-    QImage spectrumImage(colCount, rowCount, QImage::Format_RGB32);
-
-    for (r = 0; r < rowCount; ++r)
-    {
-        for (c = 0; c < colCount; ++c)
-        {
-            if (fabs(m_inputSpectrum.at(r, c).real()) > minDisplayedAmplitude)
-                spectrumImage.setPixel(c, r, qRgb(255, 255, 255));
-            else
-                spectrumImage.setPixel(c, r, qRgb(0, 0, 0));
-        }
-    }
-
-    m_spectrumPixmap = QPixmap::fromImage(spectrumImage);
-    ui->spectrumImageLabel->setPixmap(m_spectrumPixmap);
 }
 
 void Fourier2DFilter::updateFilteredSpectrum()
@@ -64,7 +29,7 @@ void Fourier2DFilter::updateFilteredSpectrum()
     m_filteredSpectrum = m_inputSpectrum;
     m_filteredSpectrum.setAlignment(ComplexMatrix::LowFrequencyMajorAlignment);
 
-    emit filteredSpectrumChanged(this);
+    emit filteredSpectrumChanged(this, m_filteredSpectrum);
 }
 
 void Fourier2DFilter::on_amplitudeDisplayThresholdSlider_valueChanged(int value)
@@ -74,6 +39,4 @@ void Fourier2DFilter::on_amplitudeDisplayThresholdSlider_valueChanged(int value)
 void Fourier2DFilter::on_amplitudeDisplayThresholdSpinBox_valueChanged(double arg1)
 {
     ui->amplitudeDisplayThresholdSlider->setValue(arg1 * 1000);
-
-    updateSpectrumView();
 }

@@ -2,7 +2,6 @@
 #define FOURIER2DFILTER_H
 
 #include <QWidget>
-#include <QPixmap>
 
 #include "ComplexMatrix.h"
 
@@ -21,8 +20,6 @@ private:
     ComplexMatrix m_inputSpectrum;
     ComplexMatrix m_filteredSpectrum;
 
-    QPixmap m_spectrumPixmap;
-
 public:
 
     explicit Fourier2DFilter(QWidget *parent = 0);
@@ -34,16 +31,15 @@ public:
 
 signals:
 
-    void filteredSpectrumChanged(Fourier2DFilter*);
+    void filteredSpectrumChanged(Fourier2DFilter*, ComplexMatrix&);
 
 private slots:
-    void on_amplitudeDisplayThresholdSlider_valueChanged(int value);
 
+    void on_amplitudeDisplayThresholdSlider_valueChanged(int value);
     void on_amplitudeDisplayThresholdSpinBox_valueChanged(double arg1);
 
 private:
 
-    void updateSpectrumView();
     void updateFilteredSpectrum();
 };
 

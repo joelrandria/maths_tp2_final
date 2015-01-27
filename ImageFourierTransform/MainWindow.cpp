@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(&m_baseImage, SIGNAL(changed(Image*)), this, SLOT(onBaseImageChanged(Image*)));
-    connect(&m_spectrumFilter, SIGNAL(filteredSpectrumChanged(Fourier2DFilter*)), this, SLOT(onFilteredSpectrumChanged(Fourier2DFilter*)));
+    connect(&m_spectrumFilter, SIGNAL(filteredSpectrumChanged(Fourier2DFilter*, ComplexMatrix&)), this, SLOT(onFilteredSpectrumChanged(Fourier2DFilter*, ComplexMatrix&)));
 }
 MainWindow::~MainWindow()
 {
@@ -49,11 +49,11 @@ void MainWindow::onBaseImageChanged(Image *)
     m_spectrumFilter.setInputSpectrum(spectrumMatrix);
 }
 
-void MainWindow::onFilteredSpectrumChanged(Fourier2DFilter *)
+void MainWindow::onFilteredSpectrumChanged(Fourier2DFilter*, ComplexMatrix& filteredSpectrum)
 {
     ComplexMatrix filteredSignalMatrix;
 
-    m_fft.inverseTransform2D(m_spectrumFilter.filteredSpectrum(), filteredSignalMatrix);
+    m_fft.inverseTransform2D(filteredSpectrum, filteredSignalMatrix);
 
     m_filteredImage.load(filteredSignalMatrix, m_baseImage.pixmap().width(), m_baseImage.pixmap().height());
     ui->filteredImageLabel->setPixmap(m_filteredImage.pixmap());

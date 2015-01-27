@@ -38,7 +38,7 @@ private slots:
     void on_actionShowSpectrumFilter_triggered();
 
     void onBaseImageChanged(Image*);
-    void onFilteredSpectrumChanged(Fourier2DFilter*);
+    void onFilteredSpectrumChanged(Fourier2DFilter*, ComplexMatrix&);
 };
 
 #endif // MAINWINDOW_H

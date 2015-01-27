@@ -17,11 +17,13 @@ QMAKE_LFLAGS +=  -std=c++11
 SOURCES += main.cpp\
         MainWindow.cpp \
     Image.cpp \
-    Fourier2DFilter.cpp
+    Fourier2DFilter.cpp \
+    Fourier2DFilterView.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
-    Fourier2DFilter.h
+    Fourier2DFilter.h \
+    Fourier2DFilterView.h
 
 FORMS    += MainWindow.ui \
     Fourier2DFilter.ui
