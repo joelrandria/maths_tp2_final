@@ -5,6 +5,8 @@
 
 #include <QGraphicsView>
 
+class QGraphicsBlurEffect;
+
 class Fourier2DFilterView : public QGraphicsView
 {
     Q_OBJECT
@@ -48,6 +50,9 @@ signals:
 private:
 
     void updateSpectrumImage();
+
+    void drawSpectrum(QPainter& painter, QWidget* viewport);
+    void drawFilter(QPainter& painter, QWidget* viewport);
 };
 
 #endif // FOURIER2DFILTERVIEW_H

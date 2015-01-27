@@ -1,5 +1,6 @@
 #include "Fourier2DFilterView.h"
 
+#include <QBitmap>
 #include <QGraphicsBlurEffect>
 
 Fourier2DFilterView::Fourier2DFilterView(QWidget* parent)
@@ -8,10 +9,10 @@ Fourier2DFilterView::Fourier2DFilterView(QWidget* parent)
       m_filterType(NoFilter),
       m_amplitudeMinimumDisplayThreshold(0.025f)
 {
-    QGraphicsBlurEffect* effect = new QGraphicsBlurEffect();
-    effect->setBlurRadius(2.5f);
-
-    viewport()->setGraphicsEffect(effect);
+    QGraphicsBlurEffect* blurEffect;
+    blurEffect = new QGraphicsBlurEffect();
+    blurEffect->setBlurRadius(2);
+    viewport()->setGraphicsEffect(blurEffect);
 }
 
 void Fourier2DFilterView::paintEvent(QPaintEvent *event)
@@ -19,7 +20,38 @@ void Fourier2DFilterView::paintEvent(QPaintEvent *event)
     QGraphicsView::paintEvent(event);
 
     QPainter painter(viewport());
-    painter.drawImage(viewport()->rect(), m_spectrumImage);
+
+    drawSpectrum(painter, viewport());
+    drawFilter(painter, viewport());
+}
+void Fourier2DFilterView::drawSpectrum(QPainter& painter, QWidget* viewport)
+{
+    painter.drawImage(viewport->rect(), m_spectrumImage);
+}
+void Fourier2DFilterView::drawFilter(QPainter& painter, QWidget* viewport)
+{
+    int ellipseRx;
+    int ellipseRy;
+    QPoint ellipseCenter;
+
+    ellipseRx = viewport->width() * m_filterValue / 200;
+    ellipseRy = viewport->height() * m_filterValue / 200;
+    ellipseCenter = QPoint(viewport->width() / 2, viewport->height() / 2);
+
+    QBitmap mask(viewport->size());
+    mask.fill(Qt::color1);
+
+    QPainter maskPainter(&mask);
+    maskPainter.setPen(Qt::color0);
+    maskPainter.drawEllipse(ellipseCenter, ellipseRx, ellipseRy);
+
+    QImage areaImage(viewport->size(), QImage::Format_ARGB32);
+    areaImage.fill(qRgba(50, 50, 50, 180));
+
+    QPixmap areaPixmap = QPixmap::fromImage(areaImage);
+    areaPixmap.setMask(mask);
+
+    painter.drawPixmap(viewport->rect(), areaPixmap);
 }
 
 void Fourier2DFilterView::setSpectrum(const ComplexMatrix& spectrum)
