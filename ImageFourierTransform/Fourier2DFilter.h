@@ -10,6 +10,7 @@ class Fourier2DFilter;
 }
 
 class Fourier2DFilterView;
+class FourierPassFilterBase;
 
 class Fourier2DFilter : public QWidget
 {
@@ -21,6 +22,8 @@ private:
 
     ComplexMatrix m_inputSpectrum;
     ComplexMatrix m_filteredSpectrum;
+
+    FourierPassFilterBase* m_filters[2];
 
 public:
 

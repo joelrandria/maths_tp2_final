@@ -16,7 +16,9 @@ SOURCES += \
     FourierLowPassFilter.cpp \
     FastFourierTransform.cpp \
     ComplexMatrix.cpp \
-    FourierTransformBase.cpp
+    FourierTransformBase.cpp \
+    FourierPassFilterBase.cpp \
+    FourierHighPassFilter.cpp
 
 HEADERS += \
     FourierTransform_Global.h \
@@ -27,7 +29,9 @@ HEADERS += \
     FastFourierTransform.h \
     Fourier.h \
     ComplexMatrix.h \
-    FourierTransformBase.h
+    FourierTransformBase.h \
+    FourierPassFilterBase.h \
+    FourierHighPassFilter.h
 
 unix {
     target.path = /usr/lib

@@ -1,21 +1,13 @@
 #ifndef FOURIERLOWPASSFILTER_H
 #define FOURIERLOWPASSFILTER_H
 
-#include "IFourierFilter.h"
+#include "FourierPassFilterBase.h"
 
-class FourierLowPassFilter : public IFourierFilter
+class FourierLowPassFilter : public FourierPassFilterBase
 {
-private:
+protected:
 
-    float m_percentThreshold;
-
-public:
-
-    FourierLowPassFilter();
-
-    void setThreshold(float percentThreshold) { m_percentThreshold = percentThreshold; }
-
-    void filter(ComplexVector& fourierValues);
+    bool accept(float pointDistance, float thresholdDistance);
 };
 
 #endif // FOURIERLOWPASSFILTER_H

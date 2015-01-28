@@ -29,6 +29,7 @@ public:
     SpectrumAlignment alignment() const { return m_alignment; }
     void setAlignment(SpectrumAlignment alignment);
 
+    bool isEmpty() const { return rows() == 0 && cols() == 0; }
     int rows() const { return (int)m_matrix.size(); }
     int cols() const { return m_matrix.size() > 0 ? (int)m_matrix[0].size() : 0; }
 
