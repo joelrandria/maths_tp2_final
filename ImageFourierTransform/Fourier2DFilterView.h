@@ -4,8 +4,7 @@
 #include "ComplexMatrix.h"
 
 #include <QGraphicsView>
-
-class QGraphicsBlurEffect;
+#include <QGraphicsPixmapItem>
 
 class Fourier2DFilterView : public QGraphicsView
 {
@@ -26,14 +25,14 @@ private:
     FilterType m_filterType;
 
     ComplexMatrix m_spectrum;
-    QImage m_spectrumImage;
     double m_amplitudeMinimumDisplayThreshold;
+
+    QGraphicsPixmapItem m_spectrumPixmapItem;
+    QGraphicsPixmapItem m_filterPixmapItem;
 
 public:
 
     explicit Fourier2DFilterView(QWidget* parent = 0);
-
-    void paintEvent(QPaintEvent* event);
 
 public slots:
 
@@ -49,10 +48,15 @@ signals:
 
 private:
 
-    void updateSpectrumImage();
+    void updateSpectrumPixmap();
+    void updateFilterPixmap();
 
     void drawSpectrum(QPainter& painter, QWidget* viewport);
     void drawFilter(QPainter& painter, QWidget* viewport);
+
+protected:
+
+     void resizeEvent(QResizeEvent * event);
 };
 
 #endif // FOURIER2DFILTERVIEW_H
