@@ -37,8 +37,19 @@ private slots:
     void on_actionQuit_triggered();
     void on_actionShowSpectrumFilter_triggered();
 
+    void on_fitPicturesToWindowCheckBox_clicked(bool checked);
+
     void onBaseImageChanged(Image*);
     void onFilteredSpectrumChanged(Fourier2DFilter*, ComplexMatrix&);
+
+protected:
+
+    void resizeEvent(QResizeEvent* event);
+
+private:
+
+    void updatePictureViewLayouts();
+
 };
 
 #endif // MAINWINDOW_H
