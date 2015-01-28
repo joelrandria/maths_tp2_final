@@ -1,13 +1,17 @@
 #include "Fourier2DFilterView.h"
 
 #include <QBitmap>
+#include <QMouseEvent>
 #include <QGraphicsBlurEffect>
+
+#include <cmath>
 
 Fourier2DFilterView::Fourier2DFilterView(QWidget* parent)
     :QGraphicsView(parent),
       m_filterValue(50),
       m_filterType(NoFilter),
-      m_amplitudeMinimumDisplayThreshold(0.025f)
+      m_amplitudeMinimumDisplayThreshold(0.025f),
+      m_shadowFilterValue(m_filterValue)
 {
     QGraphicsBlurEffect* effect;
 
@@ -28,22 +32,39 @@ void Fourier2DFilterView::setSpectrum(const ComplexMatrix& spectrum)
 }
 void Fourier2DFilterView::setAmplitudeMinimumDisplayThreshold(double threshold)
 {
-    m_amplitudeMinimumDisplayThreshold = threshold;
+    if (m_amplitudeMinimumDisplayThreshold != threshold)
+    {
+        m_amplitudeMinimumDisplayThreshold = threshold;
 
-    updateSpectrumPixmap();
+        updateSpectrumPixmap();
+    }
 }
 
 void Fourier2DFilterView::setFilterValue(int value)
 {
-    m_filterValue = value;
+    if (m_filterValue != value)
+    {
+        m_filterValue = value;
+        m_shadowFilterValue = value;
 
-    viewport()->update();
+        updateFilterPixmap();
+
+        emit filterValueChanged(this, value);
+    }
 }
 void Fourier2DFilterView::setFilterType(FilterType type)
 {
-    m_filterType = type;
+    if (m_filterType != type)
+    {
+        m_filterType = type;
 
-    viewport()->update();
+        updateFilterPixmap();
+    }
+}
+
+double Fourier2DFilterView::viewportHalfDiagonal() const
+{
+    return (hypot(viewport()->width(), viewport()->height()) / 2);
 }
 
 void Fourier2DFilterView::updateSpectrumPixmap()
@@ -84,8 +105,8 @@ void Fourier2DFilterView::updateFilterPixmap()
     QImage areaImage;
     QPixmap areaPixmap;
 
-    ellipseRx = viewport()->width() * m_filterValue / 200;
-    ellipseRy = viewport()->height() * m_filterValue / 200;
+    ellipseRx = viewportHalfDiagonal() * m_shadowFilterValue / 100;
+    ellipseRy = viewportHalfDiagonal() * m_shadowFilterValue / 100;
     ellipseCenter = QPoint(viewport()->width() / 2, viewport()->height() / 2);
 
     mask = QBitmap(viewport()->size());
@@ -104,7 +125,30 @@ void Fourier2DFilterView::updateFilterPixmap()
     m_filterPixmapItem.setPixmap(areaPixmap);
 }
 
-void Fourier2DFilterView::resizeEvent(QResizeEvent *event)
+int Fourier2DFilterView::filterValue(QMouseEvent* event) const
+{
+    int value;
+    QPointF viewportCenter;
+    double eventCenterDistance;
+
+    viewportCenter = QPointF(viewport()->width() / 2, viewport()->height() / 2);
+    eventCenterDistance = hypot(event->pos().x() - viewportCenter.x(), event->pos().y() - viewportCenter.y());
+    value = eventCenterDistance * 100 / viewportHalfDiagonal();
+
+    return (value <= 100 ? value : 100);
+}
+void Fourier2DFilterView::mouseMoveEvent(QMouseEvent* event)
+{
+    m_shadowFilterValue = filterValue(event);
+
+    updateFilterPixmap();
+}
+void Fourier2DFilterView::mouseReleaseEvent(QMouseEvent* event)
+{
+    setFilterValue(filterValue(event));
+}
+
+void Fourier2DFilterView::resizeEvent(QResizeEvent*)
 {
     updateSpectrumPixmap();
     updateFilterPixmap();

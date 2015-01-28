@@ -27,6 +27,7 @@ private:
     ComplexMatrix m_spectrum;
     double m_amplitudeMinimumDisplayThreshold;
 
+    int m_shadowFilterValue;
     QGraphicsPixmapItem m_spectrumPixmapItem;
     QGraphicsPixmapItem m_filterPixmapItem;
 
@@ -48,6 +49,9 @@ signals:
 
 private:
 
+    double viewportHalfDiagonal() const;
+    int filterValue(QMouseEvent* event) const;
+
     void updateSpectrumPixmap();
     void updateFilterPixmap();
 
@@ -56,7 +60,10 @@ private:
 
 protected:
 
-     void resizeEvent(QResizeEvent * event);
+    void mouseMoveEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
+
+    void resizeEvent(QResizeEvent* event);
 };
 
 #endif // FOURIER2DFILTERVIEW_H
