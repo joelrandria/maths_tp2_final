@@ -9,7 +9,7 @@
 Fourier2DFilterView::Fourier2DFilterView(QWidget* parent)
     :QGraphicsView(parent),
       m_filterValue(50),
-      m_filterType(NoFilter),
+      m_filterMode(NoFilter),
       m_amplitudeMinimumDisplayThreshold(0.025f),
       m_shadowFilterValue(m_filterValue)
 {
@@ -52,11 +52,11 @@ void Fourier2DFilterView::setFilterValue(int value)
         emit filterValueChanged(this, value);
     }
 }
-void Fourier2DFilterView::setFilterType(FilterType type)
+void Fourier2DFilterView::setFilterMode(FilterMode mode)
 {
-    if (m_filterType != type)
+    if (m_filterMode != mode)
     {
-        m_filterType = type;
+        m_filterMode = mode;
 
         updateFilterPixmap();
     }
@@ -80,20 +80,23 @@ void Fourier2DFilterView::updateSpectrumPixmap()
     rowCount = m_spectrum.rows();
     colCount = m_spectrum.cols();
 
-    QImage spectrumImage = QImage(colCount, rowCount, QImage::Format_RGB32);
-
-    for (r = 0; r < rowCount; ++r)
+    if (rowCount > 0 && colCount > 0)
     {
-        for (c = 0; c < colCount; ++c)
-        {
-            if (fabs(m_spectrum.at(r, c).real()) > m_amplitudeMinimumDisplayThreshold)
-                spectrumImage.setPixel(c, r, white);
-            else
-                spectrumImage.setPixel(c, r, black);
-        }
-    }
+        QImage spectrumImage = QImage(colCount, rowCount, QImage::Format_RGB32);
 
-    m_spectrumPixmapItem.setPixmap(QPixmap::fromImage(spectrumImage).scaled(viewport()->size()));
+        for (r = 0; r < rowCount; ++r)
+        {
+            for (c = 0; c < colCount; ++c)
+            {
+                if (fabs(m_spectrum.at(r, c).real()) > m_amplitudeMinimumDisplayThreshold)
+                    spectrumImage.setPixel(c, r, white);
+                else
+                    spectrumImage.setPixel(c, r, black);
+            }
+        }
+
+        m_spectrumPixmapItem.setPixmap(QPixmap::fromImage(spectrumImage).scaled(viewport()->size()));
+    }
 }
 void Fourier2DFilterView::updateFilterPixmap()
 {
@@ -105,22 +108,24 @@ void Fourier2DFilterView::updateFilterPixmap()
     QImage areaImage;
     QPixmap areaPixmap;
 
-    ellipseRx = viewportHalfDiagonal() * m_shadowFilterValue / 100;
-    ellipseRy = viewportHalfDiagonal() * m_shadowFilterValue / 100;
-    ellipseCenter = QPoint(viewport()->width() / 2, viewport()->height() / 2);
+    if (m_filterMode != NoFilter)
+    {
+        ellipseRx = viewportHalfDiagonal() * m_shadowFilterValue / 100;
+        ellipseRy = viewportHalfDiagonal() * m_shadowFilterValue / 100;
+        ellipseCenter = QPoint(viewport()->width() / 2, viewport()->height() / 2);
+        mask = QBitmap(viewport()->size());
+        mask.fill(m_filterMode == LowPassFilter ? Qt::color1 : Qt::color0);
 
-    mask = QBitmap(viewport()->size());
-    mask.fill(Qt::color1);
+        QPainter maskPainter(&mask);
+        maskPainter.setBrush(m_filterMode == LowPassFilter ? Qt::color0 : Qt::color1);
+        maskPainter.drawEllipse(ellipseCenter, ellipseRx, ellipseRy);
 
-    QPainter maskPainter(&mask);
-    maskPainter.setPen(Qt::color0);
-    maskPainter.drawEllipse(ellipseCenter, ellipseRx, ellipseRy);
+        areaImage = QImage(viewport()->size(), QImage::Format_ARGB32);
+        areaImage.fill(qRgba(50, 50, 50, 180));
 
-    areaImage = QImage(viewport()->size(), QImage::Format_ARGB32);
-    areaImage.fill(qRgba(50, 50, 50, 180));
-
-    areaPixmap = QPixmap::fromImage(areaImage);
-    areaPixmap.setMask(mask);
+        areaPixmap = QPixmap::fromImage(areaImage);
+        areaPixmap.setMask(mask);
+    }
 
     m_filterPixmapItem.setPixmap(areaPixmap);
 }

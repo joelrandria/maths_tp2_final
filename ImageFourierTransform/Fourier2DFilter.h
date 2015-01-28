@@ -9,6 +9,8 @@ namespace Ui {
 class Fourier2DFilter;
 }
 
+class Fourier2DFilterView;
+
 class Fourier2DFilter : public QWidget
 {
     Q_OBJECT
@@ -35,8 +37,14 @@ signals:
 
 private slots:
 
-    void on_amplitudeDisplayThresholdSlider_valueChanged(int value);
-    void on_amplitudeDisplayThresholdSpinBox_valueChanged(double arg1);
+    void on_filterSettingsGroupBox_toggled(bool);
+    void on_filterValueSpinBox_valueChanged(int value);
+    void onSpectrumViewFilterValueChanged(Fourier2DFilterView*, int);
+
+    void on_amplitudeDisplayThresholdSlider_valueChanged(int);
+    void on_amplitudeDisplayThresholdSpinBox_valueChanged(double);
+
+    void on_filterTypeComboBox_currentIndexChanged(int index);
 
 private:
 

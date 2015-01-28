@@ -12,7 +12,7 @@ class Fourier2DFilterView : public QGraphicsView
 
 public:
 
-    enum FilterType
+    enum FilterMode
     {
         NoFilter,
         LowPassFilter,
@@ -22,7 +22,7 @@ public:
 private:
 
     int m_filterValue;
-    FilterType m_filterType;
+    FilterMode m_filterMode;
 
     ComplexMatrix m_spectrum;
     double m_amplitudeMinimumDisplayThreshold;
@@ -41,7 +41,7 @@ public slots:
     void setAmplitudeMinimumDisplayThreshold(double);
 
     void setFilterValue(int);
-    void setFilterType(FilterType);
+    void setFilterMode(FilterMode);
 
 signals:
 

@@ -33,7 +33,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="filterSettingsGroupBox">
      <property name="title">
       <string>Filtrage</string>
      </property>
@@ -58,7 +58,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="filterTypeComboBox">
         <item>
          <property name="text">
           <string>Passe bas</string>
@@ -80,6 +80,9 @@
       </item>
       <item row="0" column="3">
        <widget class="QSlider" name="filterValueSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -89,6 +92,9 @@
        <widget class="QSpinBox" name="filterValueSpinBox">
         <property name="suffix">
          <string>%</string>
+        </property>
+        <property name="maximum">
+         <number>100</number>
         </property>
        </widget>
       </item>
@@ -159,5 +165,38 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>filterValueSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>filterValueSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>292</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>414</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>filterValueSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>filterValueSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>414</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
